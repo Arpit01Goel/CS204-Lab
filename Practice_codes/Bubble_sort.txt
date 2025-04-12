@@ -1,0 +1,61 @@
+#To sort an array using bubble sort
+
+.data 
+arr1:   .byte 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+
+.text
+
+#load the starting address of array in a10 , and size of array in a11
+auipc a0, 65536
+addi a0, a0, 0
+
+addi a1, x0, 25
+
+jal x0, main
+
+Bubble_sort:
+    #we have starting address in a0 and length in a1. we will do in place sorting
+    addi t0, x0, 1
+    ble a1, t0, return
+    
+    #need to sort
+    addi sp, sp, 4
+    sw ra, 0(sp)
+                                                                                        #let itr is t4
+    add t4, a0, x0
+    add t0, a0, a1
+    addi t0, t0, -1         #0 based index: if only one element in array, we need to exit at address of a0 only, not a0+1
+    loop:
+        beq t4, t0, out
+        addi t5, t4, 1
+        lb t1, 0(t4)
+        lb t2, 1(t4)
+        
+        bge t2, t1, Not_swap
+        #swap them here
+        sb t1, 1(t4)
+        sb t2, 0(t4)
+        Not_swap:
+            #add itr
+            addi t4, t4, 1
+            jal x0, loop
+     out:
+        
+        addi a1, a1, -1
+        jal ra, Bubble_sort
+        
+        lw ra, 0(sp)
+        addi sp, sp, -4
+        return:
+        jalr x0, ra, 0
+        
+    
+    
+    
+ 
+    
+main:
+
+jal ra, Bubble_sort
+ecall
+    
